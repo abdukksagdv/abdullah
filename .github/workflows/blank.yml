@@ -6,7 +6,6 @@ on:
 jobs:
   remote-access:
     runs-on: windows-latest
-    timeout-minutes: 360
 
     steps:
 
@@ -41,8 +40,8 @@ jobs:
           $url = "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi"
           $file = "$env:TEMP\tailscale.msi"
 
-          Invoke-WebRequest $url -OutFile $file
-          Start-Process msiexec.exe -ArgumentList "/i "$file" /quiet /norestart" -Wait
+          Invoke-WebRequest -Uri $url -OutFile $file
+          Start-Process msiexec.exe -ArgumentList "/i", ""$file"", "/quiet", "/norestart" -Wait
 
       - name: Connect Tailscale
         shell: powershell
@@ -69,5 +68,7 @@ jobs:
       - name: Keep Runner Alive
         shell: powershell
         run: |
-          Write-Host "Runner will stay active for 6 hours..."
-          Start-Sleep -Seconds 21600
+          Write-Host "Runner will stay active until manually cancelled..."
+          while ($true) {
+              Start-Sleep -Seconds 300
+          }
